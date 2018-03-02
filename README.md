@@ -2,6 +2,7 @@
 ## 日志实时显示以及快速修改沙盒值方便测试,支持摇一摇出现，隐藏，以及一直悬浮显示
 
 ![image](https://github.com/lsmakethebest/LSConsole/blob/master/1.gif)
+</br>
 ![image](https://github.com/lsmakethebest/LSConsole/blob/master/2.gif)
 
 ```
