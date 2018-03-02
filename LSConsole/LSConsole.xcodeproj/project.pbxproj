@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		28169E9820493E25007F6BC9 /* UIWindow+LSConsole.m in Sources */ = {isa = PBXBuildFile; fileRef = 28169E9720493E25007F6BC9 /* UIWindow+LSConsole.m */; };
 		285667D0204648BC00992A42 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 285667CF204648BC00992A42 /* AppDelegate.m */; };
 		285667D3204648BC00992A42 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 285667D2204648BC00992A42 /* ViewController.m */; };
 		285667D6204648BC00992A42 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 285667D4204648BC00992A42 /* Main.storyboard */; };
@@ -47,6 +48,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		28169E9620493E25007F6BC9 /* UIWindow+LSConsole.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIWindow+LSConsole.h"; sourceTree = "<group>"; };
+		28169E9720493E25007F6BC9 /* UIWindow+LSConsole.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIWindow+LSConsole.m"; sourceTree = "<group>"; };
 		285667CB204648BC00992A42 /* LSConsole.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LSConsole.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		285667CE204648BC00992A42 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		285667CF204648BC00992A42 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -181,6 +184,8 @@
 				2856684B2047EB1400992A42 /* LSConsoleView.m */,
 				2856684C2047EB1400992A42 /* LSConsoleWindow.h */,
 				2856684D2047EB1400992A42 /* LSConsoleWindow.m */,
+				28169E9620493E25007F6BC9 /* UIWindow+LSConsole.h */,
+				28169E9720493E25007F6BC9 /* UIWindow+LSConsole.m */,
 				285668482047EB1400992A42 /* LSConsoleLogTool.h */,
 				285668492047EB1400992A42 /* LSConsoleLogTool.m */,
 				2856686420480C8D00992A42 /* LSSandboxObject.h */,
@@ -336,6 +341,7 @@
 			files = (
 				285668502047EB1400992A42 /* LSConsole.m in Sources */,
 				2856686620480C8D00992A42 /* LSSandboxObject.m in Sources */,
+				28169E9820493E25007F6BC9 /* UIWindow+LSConsole.m in Sources */,
 				285667D3204648BC00992A42 /* ViewController.m in Sources */,
 				285668582047EB4600992A42 /* LSConsoleWebViewController.m in Sources */,
 				285667DE204648BC00992A42 /* main.m in Sources */,

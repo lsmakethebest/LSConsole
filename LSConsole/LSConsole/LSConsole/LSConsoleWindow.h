@@ -12,6 +12,9 @@
 @interface LSConsoleWindow : UIWindow
 
 @property (nonatomic,weak) LSConsoleView *debugView;
-@property (nonatomic,assign) CGRect lastFrame;
+@property (nonatomic,assign) CGRect fullScreenFrame;
+@property (nonatomic,assign) CGRect smallFrame;
+@property (nonatomic,assign) BOOL isFullScreen;
+-(void)setAlwasysShow:(BOOL)show;
 
 @end

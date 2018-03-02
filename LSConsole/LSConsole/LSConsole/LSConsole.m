@@ -31,8 +31,7 @@
     return self;
 }
 
-
-+(void)startDebug
++(void)startDebugWithIsAlwaysShow:(BOOL)isAlwaysShow
 {
     [LSConsole shareInstance];
     [LSConsoleLogTool startConfig];
@@ -45,8 +44,8 @@
         }
         [logList removeObjectsInRange:NSMakeRange(maxCount, logList.count-maxCount)];
     }
+    [[LSConsole shareInstance].debugWindow setAlwasysShow:isAlwaysShow];
 }
-
 
 
 @end
