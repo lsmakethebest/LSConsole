@@ -15,7 +15,6 @@
 
 + (instancetype)shareInstance;
 //开启设置
-+ (void)startDebug;
-
++ (void)startDebugWithIsAlwaysShow:(BOOL)isAlwaysShow;
 
 @end

@@ -4,7 +4,8 @@
 //
 //  Created by liusong on 2018/3/1.
 //  Copyright © 2018年 liusong. All rights reserved.
-//
+// 项目地址
+// https://github.com/lsmakethebest/LSConsole
 
 #import "LSConsoleLogTool.h"
 #ifndef Header_h

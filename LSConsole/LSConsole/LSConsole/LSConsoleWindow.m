@@ -8,42 +8,57 @@
 
 #import "LSConsoleWindow.h"
 #import "LSConsoleDefine.h"
+#import "UIWindow+LSConsole.h"
+@interface LSConsoleWindow()
+@property (nonatomic,assign) BOOL isShow;
+@property (nonatomic,assign) BOOL isAlwaysShow;
 
+@end
 
 @implementation LSConsoleWindow
 
-- (instancetype)init
+
+-(void)setAlwasysShow:(BOOL)show
 {
-    if(self = [super init]){
-        self.frame = CGRectMake(0, 0, LSConsoleWidth, LSConsoleWidth);
-        self.center = CGPointMake(LSConsoleScreenWidth- LSConsoleWidth * 0.5, LSConsoleScreenHeight * 0.5-100);
-        self.layer.cornerRadius = LSConsoleWidth/2.0;
-        self.windowLevel = UIWindowLevelAlert + 1;
-        self.backgroundColor = [[UIColor blackColor]colorWithAlphaComponent:0.2];
-        self.rootViewController = [UIViewController new];//必须的
-        [self makeKeyAndVisible];
-        
-        UILabel *label = [[UILabel alloc]initWithFrame:self.bounds];
-        label.textColor = [UIColor whiteColor];
-        label.font = [UIFont systemFontOfSize:20];
-        label.textAlignment = NSTextAlignmentCenter;
-        label.text = @"Log";
-        [self addSubview:label];
-        
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapAction)];
-        [self addGestureRecognizer:tapGesture];
-        
-        UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(panAction:)];
-        [self addGestureRecognizer:panGesture];
+    [self initSetting];
+    self.isAlwaysShow=show;
+    if (!show) {
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(motionEnded) name:LSConsoleShakePhoneNotification object:nil];
+        self.frame = CGRectMake(LSConsoleScreenWidth , LSConsoleScreenHeight * 0.5-100, LSConsoleWidth, LSConsoleWidth);
     }
-    return self;
+    
+}
+
+-(void)initSetting
+{
+    self.frame = CGRectMake(LSConsoleScreenWidth-LSConsoleWidth , LSConsoleScreenHeight * 0.5-100, LSConsoleWidth, LSConsoleWidth);
+    self.smallFrame=self.frame;
+    self.layer.cornerRadius = LSConsoleWidth/2.0;
+    self.windowLevel = UIWindowLevelAlert + 1;
+    self.backgroundColor = [[UIColor blackColor]colorWithAlphaComponent:0.2];
+    self.rootViewController = [UIViewController new];//必须的
+    self.hidden=NO;
+    UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, LSConsoleWidth, LSConsoleWidth)];
+    label.textColor = [UIColor whiteColor];
+    label.font = [UIFont systemFontOfSize:20];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.text = @"Log";
+    [self addSubview:label];
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapAction)];
+    [self addGestureRecognizer:tapGesture];
+    
+    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(panAction:)];
+    [self addGestureRecognizer:panGesture];
+    
 }
 
 - (void)tapAction
 {
+    
     CGRect frame=CGRectMake(0, self.frame.origin.y, LSConsoleScreenWidth-0, LSConsoleHeight);
     if (!self.debugView) {
-        self.lastFrame=self.frame;
+        self.smallFrame=self.frame;
         
         LSConsoleView *view=[[LSConsoleView alloc]initWithFrame:CGRectMake(0, 0, LSConsoleScreenWidth, LSConsoleHeight)];
         view.backgroundColor=[UIColor redColor];
@@ -54,16 +69,23 @@
         [UIView animateWithDuration:0.25 animations:^{
             self.frame=frame;
         }completion:^(BOOL finished) {
-
+            self.fullScreenFrame=frame;
         }];
         
     }else{
+        if (!self.debugView.hidden) {
+            return;
+        }
         self.debugView.hidden=NO;
         self.frame=CGRectMake(LSConsoleScreenWidth, self.frame.origin.y, LSConsoleScreenWidth, LSConsoleHeight);
+        self.debugView.textView.text=self.debugView.lastText;
         [UIView animateWithDuration:0.25 animations:^{
             self.frame=frame;
+        }completion:^(BOOL finished) {
+            self.fullScreenFrame=frame;
         }];
     }
+    self.isFullScreen=YES;
 }
 
 - (void)panAction:(UIPanGestureRecognizer *)panGesture
@@ -95,26 +117,49 @@
         [UIView animateWithDuration:0.5 animations:^{
             self.frame=CGRectMake(x, y, self.frame.size.width, self.frame.size.height);
         }completion:^(BOOL finished) {
-            self.lastFrame=self.frame;
+            if (self.isFullScreen) {
+                self.fullScreenFrame=self.frame;
+            }else{
+                self.smallFrame=self.frame;
+            }
             self.alpha = LSConsoleActiveAlpha;
         }];
     }
     [panGesture setTranslation:CGPointZero inView: [UIApplication sharedApplication].keyWindow ];
 }
--(void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event
-{
-    
-}
--(void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event
-{
-    
-    self.backgroundColor=[UIColor redColor];
-}
 
--(BOOL)canBecomeFirstResponder
+-(void)motionEnded
 {
-    return YES;
-}
 
+        CGPointMake(LSConsoleScreenWidth- LSConsoleWidth * 0.5, LSConsoleScreenHeight * 0.5-100);
+        if (self.isShow) {
+            CGRect frame=self.frame;
+            frame.origin.x=LSConsoleScreenWidth;
+            [UIView animateWithDuration:0.25 animations:^{
+                self.frame=frame;
+            } completion:^(BOOL finished) {
+                self.isShow=NO;
+            }];
+        }else
+        {
+            CGRect lastFrame;
+            if (self.isFullScreen) {
+                lastFrame=self.fullScreenFrame;
+            }else{
+                lastFrame=self.smallFrame;
+            }
+            CGRect newFrame=lastFrame;
+            [UIView animateWithDuration:0.25 animations:^{
+                self.frame=newFrame;
+            }completion:^(BOOL finished) {
+                self.isShow=YES;
+            }];
+        }
+
+}
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
+}
 
 @end

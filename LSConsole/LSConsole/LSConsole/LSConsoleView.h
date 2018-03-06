@@ -10,4 +10,6 @@
 
 @interface LSConsoleView : UIView
 @property (nonatomic,copy)NSString *text;
+@property (nonatomic,copy)NSString *lastText;
+@property (nonatomic,weak) UITextView *textView;
 @end

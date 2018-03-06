@@ -16,11 +16,11 @@
 @interface LSConsoleView()
 
 @property (nonatomic, strong)  dispatch_source_t source;
-@property (nonatomic,weak) UITextView *textView;
 @property (nonatomic,copy)NSString *fileName;
 @property (nonatomic,weak) UIButton *hideButton;
 @property (nonatomic,weak) UIButton *openButton;
 @property (nonatomic,weak) UIButton *clearButton;
+
 @end
 
 @implementation LSConsoleView
@@ -30,7 +30,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-
+        self.lastText=@"";
         self.fileName=[LSConsoleLogTool logFilePath];
         UITextView *textView=[[UITextView alloc]init];
         textView.showsVerticalScrollIndicator=YES;
@@ -87,6 +87,7 @@
     return self;
 }
 -(void)clear{
+    self.lastText=@"";
     self.textView.text=@"";
 }
 -(void)open
@@ -103,9 +104,10 @@
     [UIView animateWithDuration:0.25 animations:^{
         window.frame=CGRectMake(LSConsoleScreenWidth, window.frame.origin.y, window.frame.size.width, window.frame.size.height);
     }completion:^(BOOL finished) {
-        window.frame= window.lastFrame;
+        window.frame= window.smallFrame;
         self.hidden=YES;
         window.hidden=NO;
+        [LSConsole shareInstance].debugWindow.isFullScreen=NO;
     }];
 }
 
@@ -115,11 +117,15 @@
 
 -(void)setText:(NSString *)text
 {
-    NSString *lastText=[self.textView.text stringByAppendingString:text];
-    if (lastText.length>LSConsoleMaxTextLength) {
-        lastText=[lastText substringFromIndex:lastText.length-LSConsoleMaxTextLength];
+    NSString *newText=[self.lastText stringByAppendingString:text];
+    if (newText.length>LSConsoleMaxTextLength) {
+        newText=[newText substringFromIndex:newText.length-LSConsoleMaxTextLength];
     }
-    self.textView.text=lastText;
+    self.lastText=newText;
+    if (self.hidden) {
+        return;
+    }
+    self.textView.text=newText;
     [self.textView scrollRangeToVisible:NSMakeRange(self.textView.text.length, 1) ];
 }
 -(NSString*)getLogText

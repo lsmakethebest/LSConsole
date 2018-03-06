@@ -18,8 +18,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    [LSConsole startDebug];
-
+    [LSConsole startDebugWithIsAlwaysShow:NO];
     //测试沙盒的值
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     [userDefaults setObject:@(YES) forKey:@"LSBOOLKey"];
