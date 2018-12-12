@@ -25,6 +25,7 @@
 #define LSConsoleMaxFileCount    5
 //textView上最多显示数量，避免卡顿，如果卡顿请降低改数值
 #define LSConsoleMaxTextLength  10000
+#define LSConsoleDelayShowTime  0 //延迟刷新ui的时间，避免同一时间有大量数据多次调用
 #define LSConsoleDefaultPrefix  @"LS"
 
 

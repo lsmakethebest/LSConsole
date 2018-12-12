@@ -117,16 +117,46 @@
 
 -(void)setText:(NSString *)text
 {
-    NSString *newText=[self.lastText stringByAppendingString:text];
-    if (newText.length>LSConsoleMaxTextLength) {
-        newText=[newText substringFromIndex:newText.length-LSConsoleMaxTextLength];
-    }
-    self.lastText=newText;
-    if (self.hidden) {
+    if (text==nil) {
         return;
     }
-    self.textView.text=newText;
-    [self.textView scrollRangeToVisible:NSMakeRange(self.textView.text.length, 1) ];
+    static dispatch_queue_t queue;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        queue=dispatch_queue_create(0, DISPATCH_QUEUE_SERIAL);
+    });
+    
+    dispatch_async(queue, ^{
+        NSString *newText=[self.lastText stringByAppendingString:text];
+        if (newText.length>LSConsoleMaxTextLength) {
+            newText=[newText substringFromIndex:newText.length-LSConsoleMaxTextLength];
+        }
+        self.lastText=newText;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.hidden) {
+                return;
+            }
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(LSConsoleDelayShowTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                if ([self.lastText isEqualToString: self.textView.text]) {
+                    return ;
+                }
+                CGFloat offset1=self.textView.contentOffset.y;
+                CGFloat height1=self.textView.contentSize.height;
+                //加1是因为有时候获取的总是差1 原因未知
+                BOOL needScroll=!(self.textView.contentOffset.y+1 < (self.textView.contentSize.height-self.textView.frame.size.height));
+                self.textView.text=self.lastText;
+                if(needScroll){
+                    [self.textView scrollRangeToVisible:NSMakeRange(0,self.textView.text.length) ];
+                }else{
+                    //                    [self.textView setContentOffset:CGPointMake(0, y) ];
+                }
+                CGFloat offset2=self.textView.contentOffset.y;
+                CGFloat height2=self.textView.contentSize.height;
+                NSLog(@"%lf %lf %lf %lf",offset1,height1,offset2,height2);
+            });
+        });
+    });
+    
 }
 -(NSString*)getLogText
 {
